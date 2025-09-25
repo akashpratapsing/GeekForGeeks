@@ -18,8 +18,8 @@ class Solution {
             }else {
                 while (!st.isEmpty() && 
                 (
-                    (ch != '^' &&  priority(ch) <= priority(st.peek())) ||
-                    (ch == '^' && priority(ch) < priority(st.peek()))
+                    (priority(ch) < priority(st.peek())) ||
+                    (priority(ch) == priority(st.peek()) && ch != '^')
                     )){
                     sb.append(st.pop());
                 }
