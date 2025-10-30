@@ -2,47 +2,28 @@
 
 class Solution {
     public int maximumPoints(int arr[][]) {
-        
-        
         // code here
+        int[] dp = new int[4];
+        int n = arr.length;
         
-        int[][] dp = new int[arr.length][4];
-        
-        for (int[] array : dp){
-            Arrays.fill(array, -1);
+        dp[0] = Math.max(arr[0][1], arr[0][2]);
+        dp[1] = Math.max(arr[0][0], arr[0][2]);
+        dp[2] = Math.max(arr[0][0], arr[0][1]);
+        dp[3] = Math.max(arr[0][0], Math.max(arr[0][1], arr[0][2]));
+
+        for (int day = 1; day < n; day++){
+            int[] temp = new int[4];
+
+            for (int last = 0; last < 4; last++){         
+                for (int task = 0; task < 3; task++){
+
+                    if (task != last){
+                        temp[last] = Math.max(temp[last], arr[day][task] + dp[task]);
+                    }
+                }
+            }
+            dp = temp;
         }
-        
-        return solve(arr, arr.length - 1, 3, dp);
-        
-    }
-    
-    public int solve(int[][] arr, int day, int last, int[][] dp){
-        
-        if (day == 0){
-            int max = 0;
-            for (int i = 0; i < 3; i++){
-                
-                if (i != last){
-                    max = Math.max(max, arr[day][i]); 
-                }
-            }
-            
-            return max;
-         }
-         
-         if (dp[day][last] != -1){
-             return dp[day][last];
-         }
-         
-         int max = 0;
-            for (int i = 0; i < 3; i++){
-                
-                if (i != last){
-                    
-                   int train = arr[day][i] + solve(arr, day - 1, i, dp); 
-                    max = Math.max(max, train); 
-                }
-            }
-         return dp[day][last] = max;
+        return dp[3];
     }
 }
