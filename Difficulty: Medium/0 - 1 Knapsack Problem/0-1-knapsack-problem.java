@@ -3,28 +3,23 @@ class Solution {
         // code here
         int n = val.length;
         int[][] dp = new int[n][W + 1];
-        for (int[] arr: dp){
-            Arrays.fill(arr, -1);
+        
+        for (int w = wt[0]; w <= W; w++){
+            dp[0][w] = val[0];
         }
-        return f(W, val, wt, n - 1, dp);
-    }
-    
-    public int f(int w, int[] val, int[] wt, int ind, int[][] dp){
         
-        if (ind == 0) {
-            if (wt[0] <= w) return val[0];
-            return 0;
-        } 
-        
-        if (dp[ind][w] != -1) return dp[ind][w];
-        
-       
-        int notTake = f(w, val, wt, ind - 1, dp);
-        int take = Integer.MIN_VALUE;
-        if (wt[ind] <= w){
-            take = val[ind] + f(w - wt[ind], val, wt, ind - 1, dp);
+        for (int ind = 1; ind < n; ind++){
+            for (int w = 1; w <= W; w++) {
+                int notTake = dp[ind - 1][w];
+                int take = Integer.MIN_VALUE;
+                if (wt[ind] <= w){
+                    take = val[ind] + dp[ind - 1][w - wt[ind]];
+                } 
+               dp[ind][w] = Math.max(take, notTake);
+            }
         }
-        return dp[ind][w] = Math.max(take, notTake);
+        
+        return dp[n - 1][W];
     }
 }
     
