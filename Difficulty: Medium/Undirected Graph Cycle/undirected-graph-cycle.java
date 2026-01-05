@@ -15,29 +15,19 @@ class Solution {
         }
         return adj;
     }
-    public boolean detectCycle(ArrayList<ArrayList<Integer>> adj, boolean[] visited, int start){
+    public boolean detectCycle(ArrayList<ArrayList<Integer>> adj, boolean[] visited, int start, int parent){
         
-        Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[] {start, -1});
-        visited[start] = true;
-        
-        while (!q.isEmpty()){
-            
-            int node = q.peek()[0];
-            int parent = q.peek()[1];
-            q.poll();
-            
-            for (int neighbor : adj.get(node)){
-                
-                if (!visited[neighbor]){
-                    visited[neighbor] = true;
-                    q.offer(new int[] {neighbor, node});
-                } else if (neighbor != parent){
-                    return true;
-                }
-            }
-        }
-        return false;
+       visited[start] = true;
+       
+       for (int node : adj.get(start)){
+           
+           if (!visited[node]){
+               if (detectCycle(adj, visited, node, start)) return true;
+           }else if (node != parent){
+               return true;
+           }
+       }
+       return false;
     }
     public boolean isCycle(int V, int[][] edges) {
         // Code here
@@ -46,7 +36,7 @@ class Solution {
         
         for (int i = 0; i < V; i++){
             if (!visited[i]){
-                if (detectCycle(adj, visited, i)){
+                if (detectCycle(adj, visited, i, -1)){
                     return true;
                 }
             }
