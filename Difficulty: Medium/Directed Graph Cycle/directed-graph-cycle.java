@@ -1,20 +1,5 @@
 class Solution {
-    
-    public boolean dfs(int node, int[] visited, int[] path, List<List<Integer>> adj){
-        visited[node] = 1;
-        path[node] = 1;
-        
-        for (int adjNode : adj.get(node)){
-            if (visited[adjNode] == 0){
-                if (dfs(adjNode, visited, path, adj)) return true;
-            }else if (path[adjNode] == 1){
-                return true;
-            }
-        }
-        
-        path[node] = 0;
-        return false;
-    }
+
     public boolean isCyclic(int V, int[][] edges) {
         // code here
         List<List<Integer>> adj = new ArrayList<>();
@@ -23,19 +8,33 @@ class Solution {
         }
         
         for (int[] edge : edges){
-            int u = edge[0];
-            int v = edge[1];
-            adj.get(u).add(v);
+            adj.get(edge[0]).add(edge[1]);
         }
         
-        int[] visited = new int[V];
-        int[] path = new int[V];
-        
+        int[] inDegree = new int[V];
         for (int i = 0; i < V; i++){
-            if (visited[i] == 0){
-                if (dfs(i, visited, path, adj)) return true;
+            for (int node: adj.get(i)){
+                inDegree[node]++;
             }
         }
-        return false;
+        
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < V; i++){
+            if (inDegree[i] == 0){
+                q.offer(i);
+            }
+        }
+        
+        int count = 0;
+        while (!q.isEmpty()){
+            int node = q.poll();
+            count++;
+            
+            for (int it : adj.get(node)){
+                inDegree[it]--;
+                if (inDegree[it] == 0) q.offer(it);
+            }
+        }
+        return count != V;
     }
 }
