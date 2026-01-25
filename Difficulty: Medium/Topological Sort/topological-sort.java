@@ -1,14 +1,5 @@
 class Solution {
     
-    public void dfs(int node, int[] vis, Stack<Integer> st, List<List<Integer>> adj){
-        vis[node] = 1;
-        for (int adjNode : adj.get(node)){
-            if (vis[adjNode] == 0){
-                dfs(adjNode, vis, st, adj);
-            }
-        }
-        st.push(node);
-    }
     public ArrayList<Integer> topoSort(int V, int[][] edges) {
         // code here
         List<List<Integer>> adj = new ArrayList<>();
@@ -17,22 +8,32 @@ class Solution {
         }
         
         for (int[] edge : edges){
-            int u = edge[0];
-            int v = edge[1];
-            adj.get(u).add(v);
+            adj.get(edge[0]).add(edge[1]);
         }
         
-        int[] vis = new int[V];
-        Stack<Integer> st = new Stack<>();
+        int[] inDegree = new int[V];
         for (int i = 0; i < V; i++){
-            if(vis[i] == 0){
-                dfs(i, vis, st, adj);
+            for (int node: adj.get(i)){
+                inDegree[node]++;
+            }
+        }
+        
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < V; i++){
+            if (inDegree[i] == 0){
+                q.offer(i);
             }
         }
         
         ArrayList<Integer> ans = new ArrayList<>();
-        while (!st.isEmpty()){
-            ans.add(st.pop());
+        while (!q.isEmpty()){
+            int node = q.poll();
+            ans.add(node);
+            
+            for (int it : adj.get(node)){
+                inDegree[it]--;
+                if (inDegree[it] == 0) q.offer(it);
+            }
         }
         return ans;
     }
